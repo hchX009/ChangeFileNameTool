@@ -3,8 +3,6 @@ import time
 import exifread
 
 
-#
-
 # 得到图片最早的时间信息函数
 def get_first_time(full_filename):
     # 以二进制的方式读取照片文件
@@ -57,22 +55,26 @@ def get_early_time(t1, t2):
 def get_file_ext(full_filename):
     # 将文件名和扩展名分开 ex：full_filename.txt => full_filename + .txt
     file_ext = os.path.splitext(full_filename)[1]
-
     # 打印格式
     # print('文件格式：' + file_ext)
-
     return file_ext
 
 
-# 修改图片名称
+# 修改图片名称,返回新图片名字符串
 def change_filename(old_filename, new_filename):
     # 打印修改对照
-    print(old_filename + " => " + new_filename)
+    # print(old_filename + " => " + new_filename)
     os.rename(old_filename, new_filename)
+    return new_filename
+
+
+# 创建或添加修改列表名单备注文件信息
+def write_change_filename_info(old_filename, new_filename):
+    dirname = os.path.split(old_filename)[0]
+    fd = open(os.path.join(dirname, "name_change_info.txt"), "a")
+    fd.write(old_filename + " => " + new_filename + "\n")
+    fd.close()
     return
-
-
-# 输出图片修改列表名单
 
 
 # 文件夹输入模块
@@ -80,7 +82,10 @@ def change_filename(old_filename, new_filename):
 
 # 主函数
 def change_pics_name_by_time():
-    # 字典
+
+    # 文件格式字典
+    picture_types = [".bmp", ".jpg", ".tiff", ".gif", ".png", ".webp", ".jpeg"]
+    video_types = [".mp4", ".mkv"]
 
     # 路径
     img_folder_path = "../tmp/"
@@ -95,13 +100,28 @@ def change_pics_name_by_time():
         # print('照片路径名称：' + full_file_name)
         # os.path.isfile用于判断路径指向的是否为文件，相类似的os.path.isdir用于判断是否为文件夹
         if os.path.isfile(full_filename):
-            file_ext = get_file_ext(full_filename)
-            file_create_time = get_first_time(full_filename)
-            new_full_filename = os.path.join(img_folder_path, "IMG_" + file_create_time + "_0000" + file_ext)
-            while os.path.exists(new_full_filename):
-                index = "%04d" % (int(new_full_filename.split('/')[-1][20:24]) + 1)
-                new_full_filename = os.path.join(img_folder_path, "IMG_" + file_create_time + "_" + str(index) + file_ext)
-            change_filename(full_filename, new_full_filename)
+            # 得到文件的后缀，并转化为全小写
+            file_ext = get_file_ext(full_filename).lower()
+            # 根据文件后缀分类处理
+            if file_ext in picture_types:
+                # 得到文件最早出现时间
+                file_create_time = get_first_time(full_filename)
+                # 构建初始新名称
+                new_full_filename = os.path.join(img_folder_path, "IMG_" + file_create_time + "_0000" + file_ext)
+                # 查询新名称是否被占用，占用则修改
+                while os.path.exists(new_full_filename):
+                    index = "%04d" % (int(new_full_filename.split('/')[-1][20:24]) + 1)
+                    new_full_filename = os.path.join(img_folder_path, "IMG_" + file_create_time + "_" + str(index) + file_ext)
+                # 修改文件名
+                change_filename(full_filename, new_full_filename)
+                # 修改信息写入备注文件中
+                write_change_filename_info(full_filename, new_full_filename)
+            elif file_ext in video_types:
+                # print("Sorry you can not rename now")
+                write_change_filename_info(full_filename, "Sorry you can not rename now")
+            else:
+                # print("Can not find the file's format")
+                write_change_filename_info(full_filename, "Can not find the file's format")
 
 
 if __name__ == '__main__':
