@@ -1,6 +1,8 @@
 import os
 import time
 import exifread
+import hachoir
+from tqdm import tqdm
 
 
 # 得到图片最早的时间信息函数
@@ -70,10 +72,46 @@ def change_filename(old_filename, new_filename):
 
 # 创建或添加修改列表名单备注文件信息
 def write_change_filename_info(old_filename, new_filename):
+    # 修改列表名单备注文件名称
+    info_name = "filename_change_info.txt"
+    # 获得文件夹路径
     dirname = os.path.split(old_filename)[0]
-    fd = open(os.path.join(dirname, "name_change_info.txt"), "a")
-    fd.write(old_filename + " => " + new_filename + "\n")
-    fd.close()
+    # 判断是否存在 name_change_info.txt 文件，不存在则创建并输入元信息，存在则写入信息
+    if os.path.exists(os.path.join(dirname, info_name)):
+        fd = open(os.path.join(dirname, info_name), "a")
+        # 将文件路径修改为文件名
+        old_filename = os.path.split(old_filename)[1]
+        new_filename = os.path.split(new_filename)[1]
+        fd.write(format(old_filename, '<60') + " => " + new_filename + '\n')
+        fd.close()
+    else:
+        fd = open(os.path.join(dirname, info_name), "w")
+        # 文件开头文字
+        init_str = '''
+  _____ _
+ / ____| |
+| |    | |__   __ _ _ __   __ _  ___
+| |    | '_ \ / _` | '_ \ / _` |/ _ \\
+| |____| | | | (_| | | | | (_| |  __/
+ \_____|_| |_|\__,_|_|_|_|\__, |\___|
+|  __ (_)        | \ | |   __/ |
+| |__) |  ___ ___|  \| | _|___/ __ ___   ___
+|  ___/ |/ __/ __| . ` |/ _` | '_ ` _ \ / _ \\
+| |   | | (__\__ \ |\  | (_| | | | | | |  __/
+|_|__ |_|\___|___/_| \_|\__,_|_| |_| |_|\___|
+|  _ \   |__   __(_)
+| |_) |_   _| |   _ _ __ ___   ___
+|  _ <| | | | |  | | '_ ` _ \ / _ \\
+| |_) | |_| | |  | | | | | | |  __/
+|____/ \__, |_|  |_|_| |_| |_|\___|
+        __/ |
+       |___/                  made by hchX009\n\n'''
+        init_str += "修改时间：" + time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(time.time())) + '\n'
+        init_str += "修改文件夹：" + os.path.abspath(dirname) + "\n\n"
+        init_str += format("旧文件名", '<57') + " => 新文件名\n"
+        # 写入修改列表名单备注文件中
+        fd.write(init_str)
+        fd.close()
     return
 
 
@@ -82,7 +120,6 @@ def write_change_filename_info(old_filename, new_filename):
 
 # 主函数
 def change_pics_name_by_time():
-
     # 文件格式字典
     picture_types = [".bmp", ".jpg", ".tiff", ".gif", ".png", ".webp", ".jpeg"]
     video_types = [".mp4", ".mkv"]
@@ -93,7 +130,9 @@ def change_pics_name_by_time():
     # img_folder_path = "I:\BackupPictures\hch14"
 
     # os.listdir() 方法用于返回指定的文件夹包含的文件或文件夹的名字的列表
-    for filename in os.listdir(img_folder_path):
+    # 使用tqdm描述进度
+    dirlist = tqdm(os.listdir(img_folder_path))
+    for filename in dirlist:
         # os.path.join用于路径拼接，将imgpath和filename连在一起得到完整的路径，后面的参数可有多个，从第一个以”/”开头的参数开始拼接
         full_filename = os.path.join(img_folder_path, filename)
         # 打印路径
@@ -111,7 +150,8 @@ def change_pics_name_by_time():
                 # 查询新名称是否被占用，占用则修改
                 while os.path.exists(new_full_filename):
                     index = "%04d" % (int(new_full_filename.split('/')[-1][20:24]) + 1)
-                    new_full_filename = os.path.join(img_folder_path, "IMG_" + file_create_time + "_" + str(index) + file_ext)
+                    tmp_filename = "IMG_" + file_create_time + "_" + str(index) + file_ext
+                    new_full_filename = os.path.join(img_folder_path, tmp_filename)
                 # 修改文件名
                 change_filename(full_filename, new_full_filename)
                 # 修改信息写入备注文件中
@@ -122,7 +162,37 @@ def change_pics_name_by_time():
             else:
                 # print("Can not find the file's format")
                 write_change_filename_info(full_filename, "Can not find the file's format")
+        # 在命令行进度条中输出已经处理的数据
+        dirlist.set_description("Processing" + format(filename, '^50'))
 
 
 if __name__ == '__main__':
     change_pics_name_by_time()
+
+
+# 暂时没用的代码
+def vedio_rename(target_dir, filename, file_ext):
+    # 解析文件
+    the_file = hachoir.parser.createParser(target_dir + filename)
+    if the_file:
+        try:
+            info = hachoir.metadata.extractMetadata(the_file)
+        except Exception as err:
+            print("元数据提取错误： %s" % err)
+            info = None
+
+        if info:
+            for line in info.exportPlaintext():
+                if 'Creation date' in line:
+                    original_date = line.replace(
+                        '- Creation date:', '').strip().split()
+                    formated_name = original_date[0] + '_' + \
+                                    original_date[1].replace(':', '') + file_ext
+                    os.rename(target_dir + filename,
+                              target_dir + formated_name)
+                    print('新文件名：' + formated_name)
+
+        else:
+            print('无法提取元数据！')
+    else:
+        print('无法解析文件！')
