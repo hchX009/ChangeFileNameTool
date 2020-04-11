@@ -177,6 +177,5 @@ def change_pics_name_by_time():
 
 
 if __name__ == '__main__':
-    print("test")
     change_pics_name_by_time()
 
