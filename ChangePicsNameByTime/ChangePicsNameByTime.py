@@ -69,10 +69,11 @@ def get_videos_first_time(full_filename):
             original_date = line.replace('- Creation date:', '').strip()
             dateTime_p = datetime.datetime.strptime(original_date, '%Y-%m-%d %H:%M:%S')
             # 转换时区
-            original_date = dateTime_p.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Shanghai'))  # 直接转带时区的时间
-            formated_name = original_date # [0].replace('-', '') + '_' + original_date[1].replace(':', '')
-            print('新文件名：' + str(formated_name))
-            return formated_name
+            dateTime_p = dateTime_p.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Shanghai'))  # 直接转带时区的时间
+            print(str(dateTime_p)[0:19])
+            time_str = time.strftime("%Y%m%d_%H%M%S", time.strptime(str(dateTime_p)[0:19], "%Y-%m-%d %H:%M:%S"))
+            print(full_filename + ' => ' + time_str)
+            return time_str
 
 
 # 从两个时间中获得更早的时间
