@@ -134,7 +134,7 @@ def write_change_filename_info(old_filename, new_filename):
 | |_) |_   _| |   _ _ __ ___   ___
 |  _ <| | | | |  | | '_ ` _ \ / _ \\
 | |_) | |_| | |  | | | | | | |  __/
-|____/ \__, |_|  |_|_| |_| |_|\___|     0.7.0
+|____/ \__, |_|  |_|_| |_| |_|\___|     0.8.0
         __/ |
        |___/                  made by hchX009\n\n'''
         init_str += "修改时间：" + time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(time.time())) + '\n'
