@@ -1,8 +1,8 @@
 import os
 import time
 import pytz
-import datetime
 import exifread
+from datetime import datetime
 from hachoir.parser import createParser
 from hachoir.metadata import extractMetadata
 from tqdm import tqdm
@@ -57,22 +57,27 @@ def get_videos_first_time(full_filename):
     # 判断视频文件是否解析完成
     if not parser:
         print("Unable to get parser from video file")
+        parser.close()
         return "false"
     # 获得视频文件元数据
     matedata = extractMetadata(parser)
     if not matedata:
         print("Unable to get metadata from video file")
+        parser.close()
         return "false"
     for line in matedata.exportPlaintext():
         if 'Creation date' in line:
-            print(line)
+            # 提取创建日期
             original_date = line.replace('- Creation date:', '').strip()
-            dateTime_p = datetime.datetime.strptime(original_date, '%Y-%m-%d %H:%M:%S')
-            # 转换时区
-            dateTime_p = dateTime_p.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Shanghai'))  # 直接转带时区的时间
-            print(str(dateTime_p)[0:19])
-            time_str = time.strftime("%Y%m%d_%H%M%S", time.strptime(str(dateTime_p)[0:19], "%Y-%m-%d %H:%M:%S"))
-            print(full_filename + ' => ' + time_str)
+            original_time = datetime.strptime(original_date, '%Y-%m-%d %H:%M:%S')
+            # 直接转带时区的时间
+            original_time = original_time.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Shanghai'))
+            # 只显示年月日时分秒
+            # print(str(original_time)[0:19])
+            # 并按格式转换
+            time_str = time.strftime("%Y%m%d_%H%M%S", time.strptime(str(original_time)[0:19], "%Y-%m-%d %H:%M:%S"))
+            # print(full_filename + ' => ' + time_str)
+            parser.close()
             return time_str
 
 
@@ -196,10 +201,19 @@ def change_pics_name_by_time():
                 # 修改信息写入备注文件中
                 write_change_filename_info(full_filename, new_full_filename)
             elif file_ext in video_types:
-                # print("Sorry you can not rename now")
+                # 得到文件最早出现时间
                 file_create_time = get_videos_first_time(full_filename)
-                print(file_create_time)
-                write_change_filename_info(full_filename, "Sorry you can not rename now")
+                # 构建初始新名称
+                new_full_filename = os.path.join(img_folder_path, "VID_" + file_create_time + "_0000" + file_ext)
+                # 查询新名称是否被占用，占用则修改
+                while os.path.exists(new_full_filename):
+                    index = "%04d" % (int(os.path.split(new_full_filename)[1][20:24]) + 1)
+                    tmp_filename = "IMG_" + file_create_time + "_" + str(index) + file_ext
+                    new_full_filename = os.path.join(img_folder_path, tmp_filename)
+                # 修改文件名
+                change_filename(full_filename, new_full_filename)
+                # 修改信息写入备注文件中
+                write_change_filename_info(full_filename, new_full_filename)
             else:
                 # print("Can not find the file's format")
                 write_change_filename_info(full_filename, "Can not find the file's format")
