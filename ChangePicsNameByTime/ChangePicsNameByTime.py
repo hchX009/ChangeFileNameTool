@@ -14,25 +14,20 @@ from tkinter import filedialog
 def get_pics_first_time(full_filename):
     # 以二进制的方式读取照片文件
     fd = open(full_filename, 'rb')
-
     # 尝试提取元信息exif到字典tags中
     try:
         tags = exifread.process_file(fd)
     except KeyError:
         # 判断创建时间与修改时间哪一个更早
-        t = get_early_time(os.path.getmtime(full_filename), os.path.getctime(full_filename))
-        time_str = time.strftime("%Y%m%d_%H%M%S", time.localtime(t))
         # print(full_filename + "未得到Exif信息！")
-        # print(full_filename + ' => ' + time_str)
-        return time_str
+        # print(full_filename + ' => ' + get_first_time_from_filesys(full_filename))
+        return get_first_time_from_filesys(full_filename)
     else:
         # 正常提取exif则关闭文件
         fd.close()
-
     # 显示图片所有的exif信息
     # print("Show all Exif_info of " + full_filename + " :")
     # print(tags)
-
     # 在元数据exif寻找"EXIF DateTimeOriginal"项，获得拍摄时间
     if "EXIF DateTimeOriginal" in tags:
         # 直接获取到的结果格式类似为：2018:12:07 03:10:34
@@ -43,11 +38,9 @@ def get_pics_first_time(full_filename):
     else:
         # 如果没有元数据，则返回创建日期或者修改日期中最早的时间
         # 判断创建时间与修改时间哪一个更早
-        t = get_early_time(os.path.getmtime(full_filename), os.path.getctime(full_filename))
-        time_str = time.strftime("%Y%m%d_%H%M%S", time.localtime(t))
         # print(full_filename + "未得到Exif信息！")
-        # print(full_filename + ' => ' + time_str)
-        return time_str
+        # print(full_filename + ' => ' + get_first_time_from_filesys(full_filename))
+        return get_first_time_from_filesys(full_filename)
 
 
 # 得到视频最早的时间信息函数
@@ -58,13 +51,13 @@ def get_videos_first_time(full_filename):
     if not parser:
         print("Unable to get parser from video file")
         parser.close()
-        return "false"
+        return False
     # 获得视频文件元数据
     matedata = extractMetadata(parser)
     if not matedata:
         print("Unable to get metadata from video file")
         parser.close()
-        return "false"
+        return False
     for line in matedata.exportPlaintext():
         if 'Creation date' in line:
             # 提取创建日期
@@ -80,6 +73,11 @@ def get_videos_first_time(full_filename):
             parser.close()
             return time_str
 
+# 从文件系统中获取文件最早时间
+def get_first_time_from_filesys(full_filename):
+    t = get_early_time(os.path.getmtime(full_filename), os.path.getctime(full_filename))
+    time_str = time.strftime("%Y%m%d_%H%M%S", time.localtime(t))
+    return time_str
 
 # 从两个时间中获得更早的时间
 def get_early_time(t1, t2):
