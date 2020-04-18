@@ -10,17 +10,16 @@ import tkinter
 from tkinter import filedialog
 
 
-# 得到图片最早的时间信息函数
+# 得到图片最早的时间函数，返回格式为"20200417_000000"的字符串
 def get_pics_first_time(full_filename):
     # 以二进制的方式读取照片文件
     fd = open(full_filename, 'rb')
     # 尝试提取元信息exif到字典tags中
     try:
-        tags = exifread.process_file(fd)
+        matedatas = exifread.process_file(fd)
     except KeyError:
         # 判断创建时间与修改时间哪一个更早
         # print(full_filename + "未得到Exif信息！")
-        # print(full_filename + ' => ' + get_first_time_from_filesys(full_filename))
         return get_first_time_from_filesys(full_filename)
     else:
         # 正常提取exif则关闭文件
@@ -29,17 +28,16 @@ def get_pics_first_time(full_filename):
     # print("Show all Exif_info of " + full_filename + " :")
     # print(tags)
     # 在元数据exif寻找"EXIF DateTimeOriginal"项，获得拍摄时间
-    if "EXIF DateTimeOriginal" in tags:
+    if "EXIF DateTimeOriginal" in matedatas:
         # 直接获取到的结果格式类似为：2018:12:07 03:10:34
         # 修改为一定格式的时间信息：20181207_031034
-        time_str = str(tags["EXIF DateTimeOriginal"]).replace(':', '').replace(' ', '_')[0:15]
+        time_str = str(matedatas["EXIF DateTimeOriginal"]).replace(':', '').replace(' ', '_')[0:15]
         # print(full_filename + ' => ' + time_str)
         return time_str
     else:
         # 如果没有元数据，则返回创建日期或者修改日期中最早的时间
         # 判断创建时间与修改时间哪一个更早
         # print(full_filename + "未得到Exif信息！")
-        # print(full_filename + ' => ' + get_first_time_from_filesys(full_filename))
         return get_first_time_from_filesys(full_filename)
 
 
@@ -53,12 +51,12 @@ def get_videos_first_time(full_filename):
         parser.close()
         return False
     # 获得视频文件元数据
-    matedata = extractMetadata(parser)
-    if not matedata:
+    matedatas = extractMetadata(parser)
+    if not matedatas:
         print("Unable to get metadata from video file")
         parser.close()
         return False
-    for line in matedata.exportPlaintext():
+    for line in matedatas.exportPlaintext():
         if 'Creation date' in line:
             # 提取创建日期
             original_date = line.replace('- Creation date:', '').strip()
@@ -73,13 +71,23 @@ def get_videos_first_time(full_filename):
             parser.close()
             return time_str
 
-# 从文件系统中获取文件最早时间
+
+# 从文件系统中获取文件修改或创建的最早时间，返回格式为"20200417_000000"的字符串
 def get_first_time_from_filesys(full_filename):
+    # 返回较早时间的时间戳
     t = get_early_time(os.path.getmtime(full_filename), os.path.getctime(full_filename))
     time_str = time.strftime("%Y%m%d_%H%M%S", time.localtime(t))
+    # print(full_filename + ' => ' + time_str)
     return time_str
 
-# 从两个时间中获得更早的时间
+
+# 检查时间字符串格式是否符合输出格式
+def is_time_str(time_str):
+
+    return True
+
+
+# 从两个时间戳中获得更早的时间戳
 def get_early_time(t1, t2):
     if t1 >= t2:
         return t2
