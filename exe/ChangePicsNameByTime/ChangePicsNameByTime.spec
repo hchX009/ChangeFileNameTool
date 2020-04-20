@@ -3,11 +3,11 @@
 block_cipher = None
 
 
-a = Analysis(['ChangePicsNameByTime.py'],
-             pathex=['..\\..\\venv\\Lib\\site-packages\\', 'D:\\Files\\C·P·F\\ChangeFileNameTool\\ChangePicsNameByTime'],
+a = Analysis(['..\\..\\ChangePicsNameByTime\\ChangePicsNameByTime.py'],
+             pathex=['..\\..\\venv\\Lib\\site-packages\\', 'D:\\Files\\C·P·F\\ChangeFileNameTool\\exe\\ChangePicsNameByTime'],
              binaries=[],
              datas=[],
-             hiddenimports=["pkg_resources.py2_warn"],
+             hiddenimports=['pkg_resources.py2_warn'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
