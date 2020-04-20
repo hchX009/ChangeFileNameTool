@@ -1,5 +1,4 @@
 import os
-import time
 import pytz
 import exifread
 from datetime import datetime
@@ -16,7 +15,7 @@ def get_pics_first_time(full_filename):
     fd = open(full_filename, 'rb')
     # 尝试提取元信息exif到字典tags中
     try:
-        matedatas = exifread.process_file(fd)
+        pic_matedatas = exifread.process_file(fd)
     except KeyError:
         # 判断创建时间与修改时间哪一个更早
         # print(full_filename + "未得到Exif信息！")
@@ -28,10 +27,10 @@ def get_pics_first_time(full_filename):
     # print("Show all Exif_info of " + full_filename + " :")
     # print(tags)
     # 在元数据exif寻找"EXIF DateTimeOriginal"项，获得拍摄时间
-    if "EXIF DateTimeOriginal" in matedatas:
+    if "EXIF DateTimeOriginal" in pic_matedatas and is_vaild_time_in_exif(pic_matedatas["EXIF DateTimeOriginal"]):
         # 直接获取到的结果格式类似为：2018:12:07 03:10:34
         # 修改为一定格式的时间信息：20181207_031034
-        time_str = str(matedatas["EXIF DateTimeOriginal"]).replace(':', '').replace(' ', '_')[0:15]
+        time_str = str(pic_matedatas["EXIF DateTimeOriginal"]).replace(':', '').replace(' ', '_')[0:15]
         # print(full_filename + ' => ' + time_str)
         return time_str
     else:
@@ -41,22 +40,29 @@ def get_pics_first_time(full_filename):
         return get_first_time_from_filesys(full_filename)
 
 
-# 得到视频最早的时间信息函数
+# 得到视频最早的时间信息函数，返回格式为"20200417_000000"的字符串，失败返回False
 def get_videos_first_time(full_filename):
     # 解析视频文件
     parser = createParser(full_filename)
     # 判断视频文件是否解析完成
     if not parser:
-        print("Unable to get parser from video file")
+        # print("Unable to get parser from video file")
         parser.close()
         return False
-    # 获得视频文件元数据
-    matedatas = extractMetadata(parser)
-    if not matedatas:
-        print("Unable to get metadata from video file")
+    # 尝试获得视频文件元数据
+    try:
+        vid_matedatas = extractMetadata(parser)
+    except ValueError:
+        # 如果获得出现错误，则使用文件系统中的时间
+        # print("Metadata extraction error")
         parser.close()
-        return False
-    for line in matedatas.exportPlaintext():
+        return get_first_time_from_filesys(full_filename)
+    if not vid_matedatas:
+        # 若没有取到元数据
+        # print("Unable to get metadata from video file")
+        parser.close()
+        return get_first_time_from_filesys(full_filename)
+    for line in vid_matedatas.exportPlaintext():
         if 'Creation date' in line:
             # 提取创建日期
             original_date = line.replace('- Creation date:', '').strip()
@@ -66,25 +72,31 @@ def get_videos_first_time(full_filename):
             # 只显示年月日时分秒
             # print(str(original_time)[0:19])
             # 并按格式转换
-            time_str = time.strftime("%Y%m%d_%H%M%S", time.strptime(str(original_time)[0:19], "%Y-%m-%d %H:%M:%S"))
+            time_str = datetime.strftime(datetime.strptime(str(original_time)[0:19], "%Y-%m-%d %H:%M:%S"), "%Y%m%d_%H%M%S")
             # print(full_filename + ' => ' + time_str)
             parser.close()
             return time_str
+        else:
+            parser.close()
+            return get_first_time_from_filesys(full_filename)
 
 
 # 从文件系统中获取文件修改或创建的最早时间，返回格式为"20200417_000000"的字符串
 def get_first_time_from_filesys(full_filename):
     # 返回较早时间的时间戳
     t = get_early_time(os.path.getmtime(full_filename), os.path.getctime(full_filename))
-    time_str = time.strftime("%Y%m%d_%H%M%S", time.localtime(t))
+    time_str = datetime.strftime(datetime.fromtimestamp(t), "%Y%m%d_%H%M%S")
     # print(full_filename + ' => ' + time_str)
     return time_str
 
 
 # 检查时间字符串格式是否符合输出格式
-def is_time_str(time_str):
-
-    return True
+def is_vaild_time_in_exif(time):
+    try:
+        datetime.strptime(str(time), '%Y:%m:%d %H:%M:%S')
+        return True
+    except ValueError:
+        return False
 
 
 # 从两个时间戳中获得更早的时间戳
@@ -95,7 +107,7 @@ def get_early_time(t1, t2):
         return t1
 
 
-# 获得图片格式
+# 获得图片格式，输出为".ext"
 def get_file_ext(full_filename):
     # 将文件名和扩展名分开 ex：full_filename.txt => full_filename + .txt
     file_ext = os.path.splitext(full_filename)[1]
@@ -145,16 +157,19 @@ def write_change_filename_info(old_filename, new_filename):
 | |_) |_   _| |   _ _ __ ___   ___
 |  _ <| | | | |  | | '_ ` _ \ / _ \\
 | |_) | |_| | |  | | | | | | |  __/
-|____/ \__, |_|  |_|_| |_| |_|\___|     0.8.0
+|____/ \__, |_|  |_|_| |_| |_|\___|     0.8.5
         __/ |
        |___/                  made by hchX009\n\n'''
-        init_str += "修改时间：" + time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(time.time())) + '\n'
+        init_str += "修改时间：" + datetime.strftime(datetime.now(), "%Y/%m/%d %H:%M:%S") + '\n'
         init_str += "修改文件夹：" + os.path.abspath(dirname) + "\n\n"
         init_str += format("旧文件名", '<57') + " => 新文件名\n"
         # 写入修改列表名单备注文件中
         fd.write(init_str)
+        # 写入第一条信息，将文件路径修改为文件名
+        old_filename = os.path.split(old_filename)[1]
+        new_filename = os.path.split(new_filename)[1]
+        fd.write(format(old_filename, '<60') + " => " + new_filename + '\n')
         fd.close()
-    return
 
 
 # 文件夹路径选择输入模块
@@ -168,16 +183,16 @@ def select_folder_path():
 
 # 主函数
 def change_pics_name_by_time():
-    # 文件格式字典
+    # 文件格式列表
     picture_types = [".bmp", ".jpg", ".tiff", ".gif", ".png", ".webp", ".jpeg"]
-    video_types = [".mp4", ".mkv", ".mov"]
+    video_types = [".mp4", ".mkv", ".mov", ".avi"]
 
     # 路径
     img_folder_path = select_folder_path()
     # print(img_folder_path)
     # 判断路径是否存在，不存在则直接退出
     if not os.path.exists(img_folder_path):
-        return 0
+        return False
 
     # os.listdir() 方法用于返回指定的文件夹包含的文件或文件夹的名字的列表
     # 使用tqdm描述进度
@@ -209,12 +224,15 @@ def change_pics_name_by_time():
             elif file_ext in video_types:
                 # 得到文件最早出现时间
                 file_create_time = get_videos_first_time(full_filename)
+                if not file_create_time:
+                    write_change_filename_info(full_filename, "Unable to get parser from video file")
+                    continue
                 # 构建初始新名称
                 new_full_filename = os.path.join(img_folder_path, "VID_" + file_create_time + "_0000" + file_ext)
                 # 查询新名称是否被占用，占用则修改
                 while os.path.exists(new_full_filename):
                     index = "%04d" % (int(os.path.split(new_full_filename)[1][20:24]) + 1)
-                    tmp_filename = "IMG_" + file_create_time + "_" + str(index) + file_ext
+                    tmp_filename = "VID_" + file_create_time + "_" + str(index) + file_ext
                     new_full_filename = os.path.join(img_folder_path, tmp_filename)
                 # 修改文件名
                 change_filename(full_filename, new_full_filename)
@@ -229,5 +247,3 @@ def change_pics_name_by_time():
 
 if __name__ == '__main__':
     change_pics_name_by_time()
-
-

@@ -13,7 +13,7 @@
 
 ### 文件目录说明
 源码：ChangePicsNameByTime.py  
-可执行文件位置：dist/ChangePicsNameByTime_0.7.0.exe  
+可执行文件位置：dist/ChangePicsNameByTime_0.8.5.exe  
 
 ### python版本说明
 python版本：python3.7  
