@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/Downloads/CausalityEventExtraction-master/.idea/CausalityEventGraph.iml" filepath="$USER_HOME$/Downloads/CausalityEventExtraction-master/.idea/CausalityEventGraph.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ChangeFileNamesTool.iml" filepath="$PROJECT_DIR$/.idea/ChangeFileNamesTool.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../EventInferringSys/.idea/EventInferringSys.iml" filepath="$PROJECT_DIR$/../EventInferringSys/.idea/EventInferringSys.iml" />
     </modules>
   </component>
 </project>
