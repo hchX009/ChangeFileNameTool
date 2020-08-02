@@ -33,7 +33,7 @@
     <normaloff>../Documents/CASC_test.ico</normaloff>../Documents/CASC_test.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2" rowstretch="6,4,1" columnstretch="1,1,1,0">
+   <layout class="QGridLayout" name="gridLayout_2" rowstretch="7,3,1" columnstretch="1,1,1,0">
     <item row="1" column="0">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
@@ -109,7 +109,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,5,0">
+        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,6,1">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="1,7,1">
            <item>
@@ -147,9 +147,9 @@
      </widget>
     </item>
     <item row="2" column="0" colspan="4">
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="bottomBarHorizontalLayout">
       <item>
-       <spacer name="horizontalSpacer">
+       <spacer name="bottomBarHorizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -162,104 +162,102 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="enterButton">
         <property name="text">
-         <string>PushButton</string>
+         <string>修改</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="cancelButton">
         <property name="text">
-         <string>PushButton</string>
+         <string>取消</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
     <item row="0" column="1" rowspan="2">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="18">
-        <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_9">
-        <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="checkBox_2">
-          <property name="text">
-           <string>CheckBox</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <widget class="QGroupBox" name="showWindowGroupBox">
+      <property name="title">
+       <string>文件名称显示窗口</string>
+      </property>
+      <layout class="QVBoxLayout" name="showWindowVerticalLayout" stretch="25,1">
+       <item>
+        <layout class="QHBoxLayout" name="showWindowHorizontalLayout" stretch="18">
+         <item>
+          <widget class="QPlainTextEdit" name="showWindowPlainTextEdit"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="showBottonBarHorizontalLayout" stretch="0">
+         <item>
+          <spacer name="showBottonBarHorizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>27</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </item>
     <item row="0" column="2" rowspan="2">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit_2"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_10">
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="checkBox">
-          <property name="text">
-           <string>CheckBox</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <widget class="QGroupBox" name="editWindowGroupBox">
+      <property name="title">
+       <string>文件名称编辑窗口</string>
+      </property>
+      <layout class="QVBoxLayout" name="editWindowVerticalLayout" stretch="25,1">
+       <item>
+        <layout class="QHBoxLayout" name="editWindowHorizontalLayout" stretch="0">
+         <item>
+          <widget class="QPlainTextEdit" name="editWindowPlainTextEdit"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="editBottonBarHorizontalLayout">
+         <item>
+          <spacer name="editBottonBarHorizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="isEditCheckBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>是否编辑</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -285,7 +283,6 @@
    <addaction name="menu_F"/>
    <addaction name="menu_H"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
