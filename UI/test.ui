@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
+    <width>1300</width>
     <height>800</height>
    </rect>
   </property>
@@ -33,59 +33,24 @@
     <normaloff>../Documents/CASC_test.ico</normaloff>../Documents/CASC_test.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2" rowstretch="7,3,1" columnstretch="1,1,1,0">
+   <layout class="QGridLayout" name="gridLayout_2" rowstretch="8,2,1" columnstretch="2,3,3,0">
     <item row="1" column="0">
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="operationsGroupBox">
       <property name="title">
-       <string>GroupBox</string>
+       <string>修改模式</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="1">
-          <widget class="QPushButton" name="pushButton_8">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
+        <layout class="QGridLayout" name="operationsGridLayout">
          <item row="1" column="0">
-          <widget class="QPushButton" name="pushButton_7">
+          <widget class="QPushButton" name="freeEditButton">
            <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QPushButton" name="pushButton_6">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_10">
-           <property name="text">
-            <string>PushButton</string>
+            <string>编辑窗口自定义编辑</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QPushButton" name="pushButton_9">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QPushButton" name="pushButton_5">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <spacer name="verticalSpacer">
+          <spacer name="operationsVerticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -97,47 +62,79 @@
            </property>
           </spacer>
          </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="editBySequenceNumButton">
+           <property name="text">
+            <string>按文件顺序编号编辑</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="editByTimeButton">
+           <property name="text">
+            <string>按文件时间命名编辑</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="QGroupBox" name="groupBox">
+     <widget class="QGroupBox" name="fileOperationGroupBox">
       <property name="title">
-       <string>GroupBox</string>
+       <string>文件操作</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,6,1">
+        <layout class="QVBoxLayout" name="fileOperationVerticalLayout" stretch="1,6,0,1">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="1,7,1">
+          <layout class="QHBoxLayout" name="openFileHorizontalLayout" stretch="1,10,1">
            <item>
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="openFileLabel">
              <property name="text">
-              <string>Text</string>
+              <string>打开文件：</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit"/>
+            <widget class="QLineEdit" name="fileRouteLineEdit"/>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="browseButton">
              <property name="text">
-              <string>Button</string>
+              <string>浏览</string>
              </property>
             </widget>
            </item>
           </layout>
          </item>
          <item>
-          <widget class="QTreeView" name="treeView"/>
+          <widget class="QTreeView" name="showFileTreeView"/>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <layout class="QVBoxLayout" name="checkBoxesVerticalLayout">
+           <item>
+            <widget class="QCheckBox" name="involveKidsDirFileNameCheckBox">
+             <property name="text">
+              <string>包含子文件夹下文件名</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="integrateFileNameCheckBox">
+             <property name="text">
+              <string>文件名全路表示式</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="readFileNameButton">
            <property name="text">
-            <string>PushButton</string>
+            <string>开始读取文件名</string>
            </property>
           </widget>
          </item>
@@ -266,7 +263,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
+     <width>1300</width>
      <height>26</height>
     </rect>
    </property>
