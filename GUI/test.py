@@ -1,6 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from GUI.Ui_changeFileNameWindows import *
+from GUI.ui_changeFilesNameWindows import *
+
+from PyQt5.QtCore import QCoreApplication
 
 
 class MainWindow(QMainWindow, Ui_mainWindow):
@@ -12,5 +14,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     mainWindow = MainWindow()
+    mainWindow.browseButton.clicked.connect(QCoreApplication.instance().quit)
     mainWindow.show()
     sys.exit(app.exec_())

@@ -33,13 +33,13 @@
     <normaloff>../Documents/CASC_test.ico</normaloff>../Documents/CASC_test.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2" rowstretch="8,2,1" columnstretch="2,3,3,0">
+   <layout class="QGridLayout" name="centralwidgetGridLayout" rowstretch="8,2,1" columnstretch="2,3,3,0">
     <item row="1" column="0">
      <widget class="QGroupBox" name="operationsGroupBox">
       <property name="title">
        <string>修改模式</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <layout class="QVBoxLayout" name="operationsGroupBoxVerticalLayout">
        <item>
         <layout class="QGridLayout" name="operationsGridLayout">
          <item row="1" column="0">
@@ -86,7 +86,7 @@
       <property name="title">
        <string>文件操作</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="fileOperationGroupBoxVerticalLayout">
        <item>
         <layout class="QVBoxLayout" name="fileOperationVerticalLayout" stretch="1,6,0,1">
          <item>
@@ -179,7 +179,7 @@
       <property name="title">
        <string>文件名称显示窗口</string>
       </property>
-      <layout class="QVBoxLayout" name="showWindowVerticalLayout" stretch="25,1">
+      <layout class="QVBoxLayout" name="showWindowGroupBoxVerticalLayout" stretch="25,1">
        <item>
         <layout class="QHBoxLayout" name="showWindowHorizontalLayout" stretch="18">
          <item>
