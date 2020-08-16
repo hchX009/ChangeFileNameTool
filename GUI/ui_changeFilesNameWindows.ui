@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mainWindow</class>
- <widget class="QMainWindow" name="mainWindow">
+ <class>changeFilesNameWindow</class>
+ <widget class="QMainWindow" name="changeFilesNameWindow">
   <property name="enabled">
    <bool>true</bool>
   </property>
@@ -26,11 +26,11 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>测试文件</string>
+   <string>FileNameChange</string>
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../Documents/CASC_test.ico</normaloff>../Documents/CASC_test.ico</iconset>
+    <normaloff>../Resource/Icon.jpg</normaloff>../Resource/Icon.jpg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="centralwidgetGridLayout" rowstretch="8,2,1" columnstretch="2,3,3,0">
