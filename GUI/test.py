@@ -12,6 +12,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         self.num = randint(1, 100)
+        self.fileRouteLineEdit.setFocus()
 
     def showMessage(self):
         guessnumber = int(self.fileRouteLineEdit.text())
