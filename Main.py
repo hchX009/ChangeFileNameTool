@@ -11,7 +11,7 @@ from GUI.test import MainWindow
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     mainWindow = MainWindow()
-    openFileDir = OpenFileDir()
+    openFileDir = OpenFileDir(mainWindow)
     mainWindow.browseButton.clicked.connect(openFileDir.openfile)
     mainWindow.show()
     sys.exit(app.exec_())
