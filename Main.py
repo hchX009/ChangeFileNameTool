@@ -15,3 +15,5 @@ if __name__ == '__main__':
     mainWindow.browseButton.clicked.connect(openFileDir.openfile)
     mainWindow.show()
     sys.exit(app.exec_())
+
+    # stop until 2020.12.25
